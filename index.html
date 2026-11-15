@@ -223,7 +223,12 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:url("data:i
   }
   function stop(){set(false);au.pause();}
   btn.addEventListener('click',function(e){e.stopPropagation();touched=true;on?stop():start();});
-  document.addEventListener('pointerdown',function(e){if(e.target===btn)return;if(!touched){touched=true;start();}});
+  var evs=['pointerdown','touchend','click','keydown','wheel'];
+  function rm(){evs.forEach(function(n){document.removeEventListener(n,first,true);});}
+  function first(e){if(e&&e.target===btn)return;if(touched)return;touched=true;rm();start();}
+  evs.forEach(function(n){document.addEventListener(n,first,true);});
+  var ap=au.play();
+  if(ap&&ap.then)ap.then(function(){touched=true;rm();set(true);}).catch(function(){});
 })();
 </script>
 </body>
